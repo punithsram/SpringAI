@@ -4,17 +4,23 @@ import org.myeyes.ai.controller.CountryCuisines;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.ollama.api.OllamaChatOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class LlamaAiService {
 
     private final ChatClient chatClient;
+
+    @Autowired
+    private EmbeddingModel embeddingModel;
 
     public LlamaAiService(ChatClient.Builder chatClientBuilder, ChatMemory chatMemory) {
         this.chatClient = chatClientBuilder.defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build()).build();
@@ -53,6 +59,43 @@ public class LlamaAiService {
                 advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
                         conversationID)).
                 call().entity(CountryCuisines.class);
+    }
+
+    public float[] getEmbed(String text, String conversationID) {
+        return embeddingModel.embed(text);
+    }
+
+    public double getEmbedMultiples(String text, String text2, String conversationID) {
+        List<float[]> response = embeddingModel.embed(List.of(text, text2));
+        return cosineSimmilarity(response.get(0), response.get(1));
+    }
+
+    /**
+     * @param vectorA
+     * @param vectorB
+     * Vectors A and B are close, while C is far away.
+     * Algorithms like cosine similarity or Euclidean distance measure this closeness.
+     * @return
+     */
+    private double cosineSimmilarity(float[] vectorA, float[] vectorB) {
+        if (vectorA.length != vectorB.length) {
+            throw new IllegalArgumentException("Vectors must be same length");
+        }
+
+//        initializing variables for dot and magnitudes
+        double dotProduct = 0.0;
+        double magnitudeA = 0.0;
+        double magnitudeB = 0.0;
+//          calculate dot product and magnitudes
+        for (int i = 0; i < vectorA.length; i++) {
+            dotProduct = dotProduct + vectorA[i] * vectorB[i];
+            magnitudeA = magnitudeA + vectorA[i] * vectorA[i];
+            magnitudeB = magnitudeB + vectorB[i] * vectorB[i];
+        }
+
+//        calculate and return cosine similarity
+        return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
+
     }
 
     /*
@@ -117,5 +160,10 @@ public class LlamaAiService {
             model – choose the LLM.
             temperature – control creativity.
             maxTokens – control response length.
+     */
+
+
+    /*
+    Embedding
      */
 }

@@ -75,6 +75,12 @@ Example:
 POST /travelGuide?city=India&month=June&language=English&budget=Luxury&conversationID=12
 ```
 
+## Documentation
+
+| Topic      | Link                                             |
+|------------|--------------------------------------------------|
+| Embeddings | [Embeddings](docs/Embeddings_Spring_AI.md)       |
+| Chat       | [Chat](docs/Chat-Memory-Advisors-ChatOptions.md) |
 
 ## Author
 
