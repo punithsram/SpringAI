@@ -11,8 +11,8 @@ public class AskMeAnything {
     private LlamaAiService llamaAiService;
 
     @PostMapping("/ask")
-    public String askMeAnyThing(@RequestParam("question") String message) {
-        String chat = llamaAiService.chat(message);
+    public String askMeAnyThing(@RequestParam("conversationID") String conversationID, @RequestBody String message) {
+        String chat = llamaAiService.chat(message, conversationID);
         System.out.println("Response From Ollama AI  " + chat);
         return chat;
     }
