@@ -3,6 +3,7 @@ package org.myeyes.ai.service;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +17,7 @@ public class LlamaAiService {
 
     public String chat(String message, String conversationID) {
 //        replace with real time userID
-        return chatClient.prompt(message).
+        return chatClient.prompt(message).options(OllamaChatOptions.builder().temperature(1.0).maxTokens(600)).
                 advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
                         conversationID)).
                 call().content();
@@ -50,5 +51,39 @@ public class LlamaAiService {
      SimpleLoggerAdvisor:	Logs the request and response for debugging and development.
      We can use multiple advisors together.
      Custom Advisor	Add your own pre/post processing	Security, personalization, analytics
+     */
+
+
+    /*
+    Chat Options
+    ChatOptions in Spring AI is used to configure how the LLM generates responses. Instead of changing the prompt, it changes the model's behavior (temperature, max tokens, model name, etc.).
+
+    Think of it like this:
+
+    Prompt → What you ask the model.
+    ChatOptions → How the model should answer.
+    Creating ChatOptions
+
+    Most providers have their own options class, such as:
+
+    OpenAiChatOptions
+    AzureOpenAiChatOptions
+    VertexAiGeminiChatOptions
+    OllamaOptions
+
+        Option	Purpose
+            model	--> Select the model to use
+            temperature 	--> 	Control creativity vs. determinism
+            maxTokens	--> 	Limit response length
+            topP	--> 	Control token sampling
+            frequencyPenalty	--> 	Reduce repetition
+            presencePenalty		--> Encourage new ideas
+            stop		--> Define stopping sequences
+
+            In practice, the three options you'll use most often are:
+
+            model – choose the LLM.
+            temperature – control creativity.
+            maxTokens – control response length.
      */
 }
