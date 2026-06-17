@@ -13,7 +13,7 @@ public class AskMeAnything {
     @PostMapping("/ask")
     public String askMeAnyThing(@RequestParam("question") String message) {
         String chat = llamaAiService.chat(message);
-        System.out.println("Response From AI " + chat);
+        System.out.println("Response From Ollama AI  " + chat);
         return chat;
     }
 
