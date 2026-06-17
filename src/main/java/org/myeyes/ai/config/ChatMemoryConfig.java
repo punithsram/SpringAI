@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ChatMemoryConfig {
 
-
     @Bean
     ChatMemory chatMemory() {
         return MessageWindowChatMemory.builder().build();
