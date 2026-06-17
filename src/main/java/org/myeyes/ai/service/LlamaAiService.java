@@ -1,10 +1,15 @@
 package org.myeyes.ai.service;
 
+import org.myeyes.ai.controller.CountryCuisines;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class LlamaAiService {
@@ -21,6 +26,33 @@ public class LlamaAiService {
                 advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
                         conversationID)).
                 call().content();
+    }
+
+    public String getTravelGuide(String city, String month, String language, String budget, String conversationID) {
+        PromptTemplate travelTemplate = new PromptTemplate("Welcome to the {city} travel guide!\n"
+                + "if you are visiting in {month}. here's what you can do:\n"
+                + "1. Must-visit Attraction.\n"
+                + "2. Local cruise you must try.\n"
+                + "3. Useful phrases in {language}. \n"
+                + "4. Tips for Travelling on {budget} budget.\n"
+                + "Enjoy your trip!!!!!!!!!!\n");
+        Prompt prompt = travelTemplate.create(Map.of("city", city, "month", month, "language", language, "budget", budget));
+        return chatClient.prompt(prompt).
+                advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
+                        conversationID)).
+                call().content();
+    }
+
+    public CountryCuisines getCuisine(String country, String numCuisines, String language, String conversationID) {
+        PromptTemplate travelTemplate = new PromptTemplate("You are an expert in traditional cuisines.!\n"
+                + "Answer the Question: What is the traditional cuisine of {country}\n"
+                + "Return a list of {numCuisines} in {language}.\n"
+        );
+        Prompt prompt = travelTemplate.create(Map.of("country", country, "numCuisines", numCuisines, "language", language));
+        return chatClient.prompt(prompt).
+                advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
+                        conversationID)).
+                call().entity(CountryCuisines.class);
     }
 
     /*
