@@ -4,10 +4,10 @@ import org.myeyes.ai.controller.CountryCuisines;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class LlamaAiService {
 
     public String chat(String message, String conversationID) {
 //        replace with real time userID
-        return chatClient.prompt(message).options(OllamaChatOptions.builder().temperature(1.0).maxTokens(600)).
+        return chatClient.prompt(message).options(ChatOptions.builder().temperature(1.0).maxTokens(600).build()).
                 advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
                         conversationID)).
                 call().content();
