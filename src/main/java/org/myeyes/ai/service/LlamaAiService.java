@@ -7,7 +7,10 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,9 @@ public class LlamaAiService {
 
     @Autowired
     private EmbeddingModel embeddingModel;
+
+    @Autowired
+    private VectorStore vectorStore;
 
     public LlamaAiService(ChatClient.Builder chatClientBuilder, ChatMemory chatMemory) {
         this.chatClient = chatClientBuilder.defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build()).build();
@@ -96,6 +102,10 @@ public class LlamaAiService {
 //        calculate and return cosine similarity
         return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
 
+    }
+
+    public List<Document> searchJob(String query) {
+        return vectorStore.similaritySearch(SearchRequest.builder().topK(3).query(query).build());
     }
 
     /*
