@@ -67,13 +67,13 @@ public class LlamaAiService {
                 call().entity(CountryCuisines.class);
     }
 
-    public float[] getEmbed(String text, String conversationID) {
+    public float[] getEmbed(String text) {
         return embeddingModel.embed(text);
     }
 
-    public double getEmbedMultiples(String text, String text2, String conversationID) {
+    public double getEmbedMultiples(String text, String text2) {
         List<float[]> response = embeddingModel.embed(List.of(text, text2));
-        return cosineSimmilarity(response.get(0), response.get(1));
+        return cosineSimilarity(response.get(0), response.get(1));
     }
 
     /**
@@ -83,7 +83,7 @@ public class LlamaAiService {
      * Algorithms like cosine similarity or Euclidean distance measure this closeness.
      * @return
      */
-    private double cosineSimmilarity(float[] vectorA, float[] vectorB) {
+    private double cosineSimilarity(float[] vectorA, float[] vectorB) {
         if (vectorA.length != vectorB.length) {
             throw new IllegalArgumentException("Vectors must be same length");
         }
