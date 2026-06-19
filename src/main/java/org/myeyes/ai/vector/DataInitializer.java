@@ -24,6 +24,10 @@ public class DataInitializer {
         List<Document> documents = tokenTextSplitter.split(textReader.get());
         vectorStore.add(documents);
 
+        TextReader productReader = new TextReader("productlist.txt");
+        TokenTextSplitter productTextSplitter = new TokenTextSplitter(100, 100, 5, 1000, true);
+        List<Document> productDocs = productTextSplitter.split(productReader.get());
+        vectorStore.add(productDocs);
 
     }
 

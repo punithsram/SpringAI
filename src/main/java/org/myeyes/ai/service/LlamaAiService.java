@@ -1,8 +1,9 @@
 package org.myeyes.ai.service;
 
-import org.myeyes.ai.controller.CountryCuisines;
+import org.myeyes.ai.dto.CountryCuisines;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -107,6 +108,14 @@ public class LlamaAiService {
     public List<Document> searchJob(String query) {
         return vectorStore.similaritySearch(SearchRequest.builder().topK(3).query(query).build());
     }
+
+    public String productSearch(String query, String conversationID) {
+        return chatClient.prompt(query).
+                advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
+                        conversationID).advisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                ).call().content();
+    }
+
 
     /*
      Note: Chat memory and Advisor
