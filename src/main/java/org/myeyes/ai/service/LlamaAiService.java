@@ -1,8 +1,9 @@
 package org.myeyes.ai.service;
 
-import org.myeyes.ai.controller.CountryCuisines;
+import org.myeyes.ai.dto.CountryCuisines;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -67,13 +68,13 @@ public class LlamaAiService {
                 call().entity(CountryCuisines.class);
     }
 
-    public float[] getEmbed(String text, String conversationID) {
+    public float[] getEmbed(String text) {
         return embeddingModel.embed(text);
     }
 
-    public double getEmbedMultiples(String text, String text2, String conversationID) {
+    public double getEmbedMultiples(String text, String text2) {
         List<float[]> response = embeddingModel.embed(List.of(text, text2));
-        return cosineSimmilarity(response.get(0), response.get(1));
+        return cosineSimilarity(response.get(0), response.get(1));
     }
 
     /**
@@ -83,7 +84,7 @@ public class LlamaAiService {
      * Algorithms like cosine similarity or Euclidean distance measure this closeness.
      * @return
      */
-    private double cosineSimmilarity(float[] vectorA, float[] vectorB) {
+    private double cosineSimilarity(float[] vectorA, float[] vectorB) {
         if (vectorA.length != vectorB.length) {
             throw new IllegalArgumentException("Vectors must be same length");
         }
@@ -107,6 +108,14 @@ public class LlamaAiService {
     public List<Document> searchJob(String query) {
         return vectorStore.similaritySearch(SearchRequest.builder().topK(3).query(query).build());
     }
+
+    public String productSearch(String query, String conversationID) {
+        return chatClient.prompt(query).
+                advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
+                        conversationID).advisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                ).call().content();
+    }
+
 
     /*
      Note: Chat memory and Advisor
