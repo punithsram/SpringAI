@@ -16,6 +16,7 @@ import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
@@ -81,9 +82,8 @@ public class LlamaAiService {
 
     /**
      * @param vectorA
-     * @param vectorB
-     * Vectors A and B are close, while C is far away.
-     * Algorithms like cosine similarity or Euclidean distance measure this closeness.
+     * @param vectorB Vectors A and B are close, while C is far away.
+     *                Algorithms like cosine similarity or Euclidean distance measure this closeness.
      * @return
      */
     private double cosineSimilarity(float[] vectorA, float[] vectorB) {
@@ -130,5 +130,13 @@ public class LlamaAiService {
 //        Think of it as a content safety filter.
 
         return null;
+    }
+
+    public Flux<String> streamAnswer(String message, String conversationID) {
+        return chatClient.prompt(message).options(ChatOptions.builder().temperature(1.0).maxTokens(600).build()).
+                advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,
+                        conversationID)).
+                stream().content();
+
     }
 }
