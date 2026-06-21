@@ -1,5 +1,6 @@
 package org.myeyes.ai.controller;
 
+import org.myeyes.ai.dto.CountryCuisines;
 import org.myeyes.ai.service.LlamaAiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
