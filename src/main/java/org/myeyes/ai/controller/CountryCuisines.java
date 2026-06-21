@@ -1,4 +1,4 @@
-package org.myeyes.ai.dto;
+package org.myeyes.ai.controller;
 
 import java.util.List;
 
