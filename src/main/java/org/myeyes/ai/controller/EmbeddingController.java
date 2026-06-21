@@ -15,14 +15,14 @@ public class EmbeddingController {
     private LlamaAiService service;
 
     @PostMapping("/showSimilarityFinder")
-    public ResponseEntity<float[]> embeddingExample(@RequestBody String text) {
-        float[] result = service.getEmbed(text);
+    public ResponseEntity<float[]> embeddingExample(@RequestParam("conversationID") String conversationID, @RequestBody String text) {
+        float[] result = service.getEmbed(text, conversationID);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/showSimilarityFinderMultiple")
-    public ResponseEntity<Double> embeddingExample(@RequestParam String text1, @RequestParam String text2) {
-        double result = service.getEmbedMultiples(text1, text2);
+    public ResponseEntity<Double> embeddingExample(@RequestParam String text1, @RequestParam String text2, @RequestParam("conversationID") String conversationID) {
+        double result = service.getEmbedMultiples(text1, text2, conversationID);
         return ResponseEntity.ok(result);
     }
 }
