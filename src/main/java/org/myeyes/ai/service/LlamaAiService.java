@@ -7,6 +7,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.moderation.ModerationResult;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -146,24 +147,11 @@ public class LlamaAiService {
     VertexAiGeminiChatOptions
     OllamaOptions
 
-        Option	Purpose
-            model	--> Select the model to use
-            temperature 	--> 	Control creativity vs. determinism
-            maxTokens	--> 	Limit response length
-            topP	--> 	Control token sampling
-            frequencyPenalty	--> 	Reduce repetition
-            presencePenalty		--> Encourage new ideas
-            stop		--> Define stopping sequences
+    public ModerationResult moderate(String message) {
+//        Ollama does not support a moderation we have to implement open api
+//        Moderation is the process of checking whether user input or AI-generated output contains harmful, unsafe, or policy-violating content before or after the model responds.
+//        Think of it as a content safety filter.
 
-            In practice, the three options you'll use most often are:
-
-            model – choose the LLM.
-            temperature – control creativity.
-            maxTokens – control response length.
-     */
-
-
-    /*
-    Embedding
-     */
+        return null;
+    }
 }
