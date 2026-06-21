@@ -11,6 +11,7 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.moderation.ModerationResult;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,4 +124,11 @@ public class LlamaAiService {
                 .build()).call().content();
     }
 
+    public ModerationResult moderate(String message) {
+//        Ollama does not support a moderation we have to implement open api
+//        Moderation is the process of checking whether user input or AI-generated output contains harmful, unsafe, or policy-violating content before or after the model responds.
+//        Think of it as a content safety filter.
+
+        return null;
+    }
 }
